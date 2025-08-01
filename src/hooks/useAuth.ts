@@ -27,7 +27,7 @@ export const useAuth = () => {
       localStorage.setItem('user_info', JSON.stringify(response.user));
       
       setUser(response.user);
-      router.push('/'); // Redirect to home page after successful login
+      router.push('/');
       
       return response;
     } catch (err: any) {
