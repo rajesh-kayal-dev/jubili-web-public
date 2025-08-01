@@ -1,6 +1,9 @@
 'use client';
 
 import Navbar from '@/components/layout/Navbar';
+import ProductCard from '@/components/product/ProductCard';
+import { Product } from '@/lib/types/product';
+import { searchProducts } from '@/services/product.service';
 import { useSearchParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
 
@@ -8,22 +11,19 @@ export default function SearchPage() {
   const searchParams = useSearchParams();
   const query = searchParams.get('q');
   const [isLoading, setIsLoading] = useState(true);
-  const [results, setResults] = useState<any[]>([]);
+  const [results, setResults] = useState<Product[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchSearchResults = async () => {
       setIsLoading(true);
+      setError(null);
       try {
-        // TODO: Replace this with your actual API call
-        // const response = await fetch(`/api/search?q=${query}`);
-        // const data = await response.json();
-        // setResults(data);
-        
-        // Placeholder: Remove this when implementing actual search
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        setResults([]);
+        const products = await searchProducts(query || '');
+        setResults(products);
       } catch (error) {
         console.error('Error fetching search results:', error);
+        setError('Failed to fetch search results. Please try again.');
         setResults([]);
       } finally {
         setIsLoading(false);
@@ -55,11 +55,8 @@ export default function SearchPage() {
           {query ? (
             results.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {results.map((result, index) => (
-                  <div key={index} className="border rounded-lg p-4">
-                    {/* Replace this with your actual result card implementation */}
-                    <p>Search result item {index + 1}</p>
-                  </div>
+                {results.map((product) => (
+                  <ProductCard key={product.productId} product={product} />
                 ))}
               </div>
             ) : (

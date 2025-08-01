@@ -17,7 +17,7 @@ const Navbar = () => {
       { name: 'Search', path: '/search' },
       { name: 'Offers', path: '/offers' },
       { name: 'Cart', path: '/cart' },
-      { name: 'Profile', path: '/profile' }
+      { name: 'User', path: '/user' }
     ];
     
     const activeItem = navItems.find(item => item.path === pathname);
@@ -86,8 +86,8 @@ const Navbar = () => {
   // Custom SVG Icons
   const HomeIcon = ({ size = 20, className = "" }) => (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-      <path d="M3 12l9-9 9 9"/>
-      <path d="M9 21V9h6v12"/>
+      <path d="M4 10.5L12 3l8 7.5v8a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 18.5v-8z" />
+      <line x1="9" y1="16" x2="15" y2="16" />
     </svg>
   );
 
@@ -133,7 +133,7 @@ const Navbar = () => {
     { name: 'Search', icon: SearchIcon, href: '/search' },
     { name: 'Offers', icon: PercentIcon, href: '/offers' },
     { name: 'Cart', icon: CartIcon, href: '/cart' },
-    { name: 'Profile', icon: UserIcon, href: '/profile' }
+    { name: 'User', icon: UserIcon, href: '/user' }
   ];
 
   const handleTabClick = (tabName: string) => {
@@ -150,7 +150,7 @@ const Navbar = () => {
         'Home': '/',
         'Offers': '/offers',
         'Cart': '/cart',
-        'Profile': '/user'
+        'User': '/user'
       };
       
       if (routes[tabName]) {
@@ -199,7 +199,7 @@ const Navbar = () => {
             <SearchIcon size={18} className="text-gray-400 flex-shrink-0" />
             <form onSubmit={handleSearchSubmit} className="flex-1">
               <input
-                type="search"
+                type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search..."
