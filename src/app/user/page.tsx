@@ -5,6 +5,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { User } from "@/lib/types/auth";
 import CustomButton from "@/components/ui/CustomButton";
 import AuthPopup from "@/components/shared/AuthPopup";
+import Navbar from "@/components/layout/Navbar";
 
 export default function UserProfile() {
     const router = useRouter();
@@ -25,6 +26,7 @@ export default function UserProfile() {
     }
 
     return (
+        <>
         <div className="container mx-auto px-4 py-8">
             <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6">
                 <h1 className="text-3xl font-bold mb-6">Profile</h1>
@@ -59,5 +61,7 @@ export default function UserProfile() {
                 </div>
             </div>
         </div>
+        <Navbar />
+        </>
     );
 }
