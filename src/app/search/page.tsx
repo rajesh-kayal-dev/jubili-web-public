@@ -6,10 +6,12 @@ import { Product } from '@/lib/types/product';
 import { searchProducts } from '@/services/product.service';
 import { useSearchParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function SearchPage() {
   const searchParams = useSearchParams();
   const query = searchParams.get('q');
+  const { token } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   const [results, setResults] = useState<Product[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -19,7 +21,7 @@ export default function SearchPage() {
       setIsLoading(true);
       setError(null);
       try {
-        const products = await searchProducts(query || '');
+        const products = await searchProducts(query || '', token || undefined);
         setResults(products);
       } catch (error) {
         console.error('Error fetching search results:', error);
@@ -41,20 +43,17 @@ export default function SearchPage() {
   return (
     <>
     <Navbar />
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-4">
-        {query ? `Search results for "${query}"` : 'Search'}
-      </h1>
-
-      {isLoading ? (
-        <div className="flex items-center justify-center py-12">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+    <div className="container mx-auto">
+      {isLoading ? (  
+        <div className="flex h-full items-center justify-center py-12">
+          <img src="/icons/loading.svg" alt="Loading..." className="h-8 w-8 animate-spin" />
+          {/* <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div> */}
         </div>
       ) : (
         <div>
           {query ? (
             results.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="flex flex-col mt-0">
                 {results.map((product) => (
                   <ProductCard key={product.productId} product={product} />
                 ))}

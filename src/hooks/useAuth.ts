@@ -67,8 +67,16 @@ export const useAuth = () => {
     router.push('/login');
   };
 
+  const getToken = () => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('auth_token');
+    }
+    return null;
+  };
+
   return {
     user,
+    token: getToken(),
     loading,
     error,
     login,

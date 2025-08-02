@@ -11,6 +11,7 @@ export interface Product {
   gender: string;
   stock: number;
   likeCount: number;
+  isLiked?: boolean;
   imageUrls: string[];
   sellerId: string;
   categoryId: string;

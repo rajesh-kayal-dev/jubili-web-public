@@ -211,7 +211,7 @@ const Navbar = () => {
               onClick={closeSearch}
               className="text-gray-400 hover:text-white transition-colors duration-200 flex-shrink-0"
             >
-              <CloseIcon size={16} />
+              <CloseIcon size={16} /> 
             </button>
           </div>
         ) : (
