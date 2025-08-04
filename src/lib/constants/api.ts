@@ -13,5 +13,6 @@ export const API_ENDPOINTS = {
   USER_ACTIONS: {
     BASE: '/api/user-actions',
     LIKED_PRODUCTS: '/api/user-actions/liked-products',
+    CART: (userId: string) => `/api/user-actions/cart?userId=${userId}`,
   },
 } as const;

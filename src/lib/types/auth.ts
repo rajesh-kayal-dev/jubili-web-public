@@ -11,7 +11,7 @@ export interface SignupCredentials {
 }
 
 export interface User {
-  id: string;
+  userId: string;
   email: string;
   name: string;
   phone?: string;

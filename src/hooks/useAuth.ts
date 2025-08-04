@@ -74,9 +74,19 @@ export const useAuth = () => {
     return null;
   };
 
+  const getUserId = () => {
+    console.log('user in getUserId:', user);
+    
+    if (user) {
+      return user.userId;
+    }
+    return null;
+  };
+
   return {
     user,
     token: getToken(),
+    userId: getUserId(),
     loading,
     error,
     login,
