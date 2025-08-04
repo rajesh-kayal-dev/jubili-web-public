@@ -8,5 +8,10 @@ export const API_ENDPOINTS = {
   },
   PRODUCTS: {
     SEARCH: '/api/products/search-products',
+    LIKE: '/api/products/like',
+  },
+  USER_ACTIONS: {
+    BASE: '/api/user-actions',
+    LIKED_PRODUCTS: '/api/user-actions/liked-products',
   },
 } as const;

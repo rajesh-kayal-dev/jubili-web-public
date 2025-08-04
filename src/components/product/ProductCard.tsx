@@ -12,7 +12,6 @@ interface ProductCardProps {
 export default function ProductCard({ product }: ProductCardProps) {
   const [bgImage, setBgImage] = useState(product.imageUrls?.[0]);
   const [descExpanded, setDescExpanded] = useState(false);
-  const [cartLoading, setCartLoading] = useState(false);
   const [isLiked, setIsLiked] = useState(product.isLiked || false);
   const [likeCount, setLikeCount] = useState(product.likeCount);
   const [likeLoading, setLikeLoading] = useState(false);
@@ -40,19 +39,7 @@ export default function ProductCard({ product }: ProductCardProps) {
     }
   };
 
-  const handleAddToCart = async () => {
-    console.log("Adding to cart");
-    if (cartLoading) return;
-    setCartLoading(true);
-    try {
-      // Add your cart logic here later
-      console.log("Product added to cart:", product.productId);
-    } catch (error) {
-      console.error("Failed to add to cart:", error);
-    } finally {
-      setCartLoading(false);
-    }
-  };
+
 
   return (
     <div className="relative bg-white overflow-hidden flex flex-col">
@@ -181,14 +168,7 @@ export default function ProductCard({ product }: ProductCardProps) {
               Make it yours
             </button>
           </Link>
-            <button 
-            className="bg-gray-100 font-bold rounded-full p-3 hover:bg-gray-200 cursor-pointer transition-colors flex items-center gap-2" 
-            onClick={handleAddToCart} 
-            disabled={cartLoading}
-            >
-            Drop in Bag
-            <img src="/icons/cart-bag.svg" alt="Add to cart" width={24} height={24} />
-            </button>
+
           <div className="flex-1" />
         </div>
       </div>
