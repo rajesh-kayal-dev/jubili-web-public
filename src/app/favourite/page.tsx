@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import Navbar from "@/components/layout/Navbar";
 import { useLikedProducts } from "@/hooks/useLikedProducts";
+import { Product } from "@/lib/types/product";
 // import { Product } from "@/lib/types/product";
 
 export default function FavouritePage() {
@@ -39,14 +40,14 @@ export default function FavouritePage() {
               {/* Table Body */}
               {error && <div className="p-6 text-red-500">{error}</div>}
               {likedProducts && likedProducts.length > 0 ? (
-                likedProducts.map((item: any) => (
+                likedProducts.map((item: Product) => (
                   <div
                     key={item.productId}
                     className="flex flex-col md:grid md:grid-cols-12 items-start md:items-center ml-2 md:ml-6 mr-2 md:mr-6 py-6 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition"
                   >
                     {/* Product Info */}
                     <div className="flex items-center gap-4 col-span-6 w-full md:w-auto mb-2 md:mb-0">
-                      <img src={item.imageUrl} alt={item.productName} className="w-16 h-16 object-cover rounded-lg flex-shrink-0" />
+                      <img src={item.imageUrls[0]} alt={item.productName} className="w-16 h-16 object-cover rounded-lg flex-shrink-0" />
                       <div>
                         <div className="font-semibold text-base text-gray-900 break-words max-w-[150px] md:max-w-none">{item.productName}</div>
                         <div className="flex gap-2 mt-2">

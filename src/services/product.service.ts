@@ -46,7 +46,8 @@ export const getLikedProducts = async (token: string): Promise<Product[]> => {
     if (!response.ok) {
       throw new Error('Failed to fetch liked products');
     }
-
+    console.log('Fetching liked products:', response);
+    
     const data = await response.json();
     return data;
   } catch (error) {

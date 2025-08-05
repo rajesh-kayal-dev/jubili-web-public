@@ -22,8 +22,9 @@ export const useCart = () => {
       const cartData = await userActionsService.getCart(userId);
       setCart(cartData);
       return cartData;
-    } catch (err: any) {
-      setError(err.message || 'Error fetching cart');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Error fetching cart';
+      setError(errorMessage);
       throw err;
     } finally {
       setLoading(false);

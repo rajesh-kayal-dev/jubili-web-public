@@ -30,8 +30,9 @@ export const useAuth = () => {
       router.push('/');
       
       return response;
-    } catch (err: any) {
-      setError(err.message || 'An error occurred during login');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'An error occurred during login';
+      setError(errorMessage);
       throw err;
     } finally {
       setLoading(false);
@@ -53,8 +54,9 @@ export const useAuth = () => {
       router.push('/'); // Redirect to home page after successful signup
       
       return response;
-    } catch (err: any) {
-      setError(err.message || 'An error occurred during signup');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'An error occurred during signup';
+      setError(errorMessage);
       throw err;
     } finally {
       setLoading(false);
@@ -74,9 +76,7 @@ export const useAuth = () => {
     return null;
   };
 
-  const getUserId = () => {
-    console.log('user in getUserId:', user);
-    
+  const getUserId = () => {    
     if (user) {
       return user.userId;
     }

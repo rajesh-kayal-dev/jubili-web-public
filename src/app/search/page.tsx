@@ -38,7 +38,7 @@ export default function SearchPage() {
       setIsLoading(false);
       setResults([]);
     }
-  }, [query]);
+  }, [query, token]);
 
   return (
     <>
@@ -60,7 +60,7 @@ export default function SearchPage() {
               </div>
             ) : (
               <div className="text-center py-12">
-                <p className="text-gray-600">No results found for "{query}"</p>
+                <p className="text-gray-600">No results found for &quot;{query}&quot;</p>
                 <p className="text-sm text-gray-500 mt-2">Try searching with different keywords</p>
               </div>
             )

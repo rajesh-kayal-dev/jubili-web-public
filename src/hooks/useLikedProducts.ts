@@ -15,7 +15,7 @@ export const useLikedProducts = (): UseLikedProductsReturn => {
   const [likedProducts, setLikedProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { user, token } = useAuth();
+  const { token } = useAuth();
 
   useEffect(() => {
     const fetchLikedProducts = async () => {
@@ -29,8 +29,9 @@ export const useLikedProducts = (): UseLikedProductsReturn => {
         const data = await getLikedProducts(token);
         setLikedProducts(data || []);
         setError(null);
-      } catch (err: any) {
-        setError(err.message || 'Failed to fetch liked products');
+      } catch (err: unknown) {
+        const errorMessage = err instanceof Error ? err.message : 'Failed to fetch liked products';
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }
@@ -49,8 +50,9 @@ export const useLikedProducts = (): UseLikedProductsReturn => {
       await toggleProductLike(productId, token);
       setLikedProducts((prev) => prev.filter((item) => item.productId !== productId));
       setError(null);
-    } catch (err: any) {
-      setError(err.message || 'Failed to unlike product');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to unlike product';
+      setError(errorMessage);
     }
   };
 

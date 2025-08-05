@@ -19,8 +19,9 @@ class UserActionsService {
       }
 
       return response.json();
-    } catch (error: any) {
-      throw new Error(error.message || 'Error fetching cart');
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Error fetching cart';
+      throw new Error(errorMessage);
     }
   }
 }

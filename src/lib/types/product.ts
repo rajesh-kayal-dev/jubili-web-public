@@ -16,7 +16,11 @@ export interface Product {
   sellerId: string;
   categoryId: string;
   createdAt: string;
-  linkedItems: any[]; // TODO: Define proper type if needed
+  linkedItems: Array<{
+    id: string;
+    name: string;
+    // Add other properties as needed
+  }>;
 }
 
 export interface SearchProductsResponse {
