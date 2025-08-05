@@ -95,10 +95,10 @@ export default function UserProfile() {
                                     {new Date(user.createdAt).toLocaleDateString()}
                                 </div>
                             </div>
-                            {user.id && (
+                            {user.userId && (
                                 <div>
                                     <div className="text-gray-400 text-xs uppercase mb-1">User ID</div>
-                                    <div className="font-mono text-sm">{user.id}</div>
+                                    <div className="font-mono text-sm">{user.userId}</div>
                                 </div>
                             )}
                         </div>
