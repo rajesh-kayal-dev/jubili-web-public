@@ -1,5 +1,7 @@
+// File: src/app/search/page.tsx
 'use client';
 
+import { Suspense } from 'react';
 import Navbar from '@/components/layout/Navbar';
 import ProductCard from '@/components/product/ProductCard';
 import { Product } from '@/lib/types/product';
@@ -8,24 +10,22 @@ import { useSearchParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 
-export default function SearchPage() {
+// Separate component that uses useSearchParams
+function SearchContent() {
   const searchParams = useSearchParams();
   const query = searchParams.get('q');
   const { token } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   const [results, setResults] = useState<Product[]>([]);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchSearchResults = async () => {
       setIsLoading(true);
-      setError(null);
       try {
         const products = await searchProducts(query || '', token || undefined);
         setResults(products);
       } catch (error) {
         console.error('Error fetching search results:', error);
-        setError('Failed to fetch search results. Please try again.');
         setResults([]);
       } finally {
         setIsLoading(false);
@@ -41,13 +41,10 @@ export default function SearchPage() {
   }, [query, token]);
 
   return (
-    <>
-    <Navbar />
     <div className="container mx-auto">
       {isLoading ? (  
         <div className="flex h-full items-center justify-center py-12">
           <img src="/icons/loading.svg" alt="Loading..." className="h-8 w-8 animate-spin" />
-          {/* <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div> */}
         </div>
       ) : (
         <div>
@@ -72,6 +69,21 @@ export default function SearchPage() {
         </div>
       )}
     </div>
+  );
+}
+
+// Main component with Suspense boundary
+export default function SearchPage() {
+  return (
+    <>
+      <Navbar />
+      <Suspense fallback={
+        <div className="flex h-full items-center justify-center py-12">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+        </div>
+      }>
+        <SearchContent />
+      </Suspense>
     </>
   );
 }

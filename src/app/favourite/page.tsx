@@ -47,7 +47,7 @@ export default function FavouritePage() {
                   >
                     {/* Product Info */}
                     <div className="flex items-center gap-4 col-span-6 w-full md:w-auto mb-2 md:mb-0">
-                      <img src={item.imageUrls[0]} alt={item.productName} className="w-16 h-16 object-cover rounded-lg flex-shrink-0" />
+                      <img src={item.imageUrl} alt={item.productName} className="w-16 h-16 object-cover rounded-lg flex-shrink-0" />
                       <div>
                         <div className="font-semibold text-base text-gray-900 break-words max-w-[150px] md:max-w-none">{item.productName}</div>
                         <div className="flex gap-2 mt-2">

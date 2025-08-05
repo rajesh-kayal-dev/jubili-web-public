@@ -12,11 +12,11 @@ export interface Product {
   stock: number;
   likeCount: number;
   isLiked?: boolean;
-  imageUrls: string[];
-  sellerId: string;
-  categoryId: string;
-  createdAt: string;
-  linkedItems: Array<{
+  imageUrl: string;
+  sellerId?: string;
+  categoryId?: string;
+  createdAt?: string;
+  linkedItems?: Array<{
     id: string;
     name: string;
     // Add other properties as needed
