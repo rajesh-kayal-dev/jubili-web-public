@@ -83,11 +83,11 @@ export default function LoginPage() {
 
             <div className="space-y-3">
               <button className="w-full flex items-center justify-center gap-2 border border-gray-300 py-2 rounded-lg hover:bg-gray-100">
-                <Image src="https://www.svgrepo.com/show/355037/google.svg" alt="Google" className="w-5 h-5" />
+                <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google" className="w-5 h-5" width={20} height={20} />
                 Sign in with Google
               </button>
               <button className="w-full flex items-center justify-center gap-2 border border-gray-300 py-2 rounded-lg hover:bg-gray-100">
-                <Image src="https://www.svgrepo.com/show/448224/facebook.svg" alt="Facebook" className="w-5 h-5" />
+                <img src="https://www.svgrepo.com/show/448224/facebook.svg" alt="Facebook" className="w-5 h-5" width={20} height={20} />
                 Sign in with Facebook
               </button>
             </div>
@@ -100,7 +100,7 @@ export default function LoginPage() {
 
           {/* Right - Image Section */}
           <div className="hidden md:block">
-            <Image
+            <img
               src="https://plus.unsplash.com/premium_photo-1664882424754-ee3aeaa915cf?q=80&w=1976&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
               alt="Login visual"
               className="w-full h-full object-cover"

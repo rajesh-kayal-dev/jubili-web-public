@@ -34,7 +34,7 @@ export default function SignupPage() {
         <div className="max-w-5xl w-full grid grid-cols-1 md:grid-cols-2 bg-white shadow-lg rounded-2xl overflow-hidden">
           {/* Right - Image Section */}
           <div className="hidden md:block">
-            <Image
+            <img
               src="https://images.pexels.com/photos/15485500/pexels-photo-15485500/free-photo-of-a-group-of-young-people-at-an-event.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
               alt="Login visual"
               className="w-full h-full object-cover"
@@ -120,11 +120,11 @@ export default function SignupPage() {
 
             <div className="space-y-3">
               <button className="w-full flex items-center justify-center gap-2 border border-gray-300 py-2 rounded-lg hover:bg-gray-100">
-                <Image src="https://www.svgrepo.com/show/355037/google.svg" alt="Google" className="w-5 h-5" />
+                <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google" className="w-5 h-5" />
                 Sign in with Google
               </button>
               <button className="w-full flex items-center justify-center gap-2 border border-gray-300 py-2 rounded-lg hover:bg-gray-100">
-                <Image src="https://www.svgrepo.com/show/448224/facebook.svg" alt="Facebook" className="w-5 h-5" />
+                <img src="https://www.svgrepo.com/show/448224/facebook.svg" alt="Facebook" className="w-5 h-5" />
                 Sign in with Facebook
               </button>
             </div>
