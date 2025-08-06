@@ -89,7 +89,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         {/* Thumbnails */}
         <div className="flex overflow-x-auto gap-4 mb-2" style={{ height: 320 }}>
           <div style={{ height: 300, width: 0 }} />
-          {product.imageUrls.map((url, idx) => (
+          {(Array.isArray(product.imageUrls) ? product.imageUrls : []).map((url, idx) => (
             <img
               key={idx}
               src={url}

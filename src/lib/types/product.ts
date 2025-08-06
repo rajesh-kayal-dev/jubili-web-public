@@ -12,7 +12,7 @@ export interface Product {
   stock: number;
   likeCount: number;
   isLiked?: boolean;
-  imageUrl: string;
+  imageUrls: string;
   sellerId?: string;
   categoryId?: string;
   createdAt?: string;
