@@ -75,7 +75,7 @@ export default function UserProfile() {
                     <div className="space-y-4">
                         <div className="flex items-center gap-4 mb-6">
                             <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center">
-                                <Image src="/icons/user.svg" alt="User" className="w-10 h-10" />
+                                <img src="/icons/user.svg" alt="User" className="w-10 h-10" />
                             </div>
                             <div>
                                 <div className="text-xl font-bold">{user.name}</div>
@@ -147,7 +147,7 @@ export default function UserProfile() {
                                     <div className="col-span-3 flex flex-wrap gap-2 mb-2 md:mb-0">
                                         {order.items.map((item) => (
                                             <div key={item.productId} className="flex items-center gap-2 bg-gray-100 rounded-lg px-2 py-1">
-                                                <Image src={item.imageUrl} alt={item.productName} className="w-8 h-8 object-cover rounded" />
+                                                <img src={item.imageUrl} alt={item.productName} className="w-8 h-8 object-cover rounded" />
                                                 <span className="text-xs font-medium">{item.productName} x{item.quantity}</span>
                                             </div>
                                         ))}
