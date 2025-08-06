@@ -216,7 +216,7 @@ const Navbar = () => {
         ) : (
           // Normal Navigation Mode
           <div className="flex items-center justify-between gap-6">
-            {navItems.map((item, index) => {
+            {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = activeTab === item.name;
               

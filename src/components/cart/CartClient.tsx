@@ -1,44 +1,108 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { useCart } from '@/hooks/useCart';
-import { CartItem } from '@/components/cart/CartItem';
 import CustomButton from '@/components/ui/CustomButton';
 import { FaTrash } from 'react-icons/fa';
 
+// Loading component
+function LoadingSpinner() {
+  return (
+    <div className="fixed inset-0 flex items-center justify-center z-50 bg-white bg-opacity-75">
+      <div className="flex flex-col items-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mb-4"></div>
+        <div className="text-lg font-medium text-gray-700">Loading cart...</div>
+      </div>
+    </div>
+  );
+}
+
+// Error component
+function ErrorMessage({ error, onRetry }: { error: string; onRetry: () => void }) {
+  return (
+    <div className="text-center py-8">
+      <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md mx-auto">
+        <h3 className="text-red-800 font-medium mb-2">Error loading cart</h3>
+        <p className="text-red-600 mb-4">{error}</p>
+        <button 
+          onClick={onRetry}
+          className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition"
+        >
+          Try again
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// Empty cart component
+function EmptyCart({ onContinueShopping }: { onContinueShopping: () => void }) {
+  return (
+    <div className="text-center py-12">
+      <div className="mb-6">
+        <svg 
+          className="mx-auto h-16 w-16 text-gray-400" 
+          fill="none" 
+          viewBox="0 0 24 24" 
+          stroke="currentColor"
+        >
+          <path 
+            strokeLinecap="round" 
+            strokeLinejoin="round" 
+            strokeWidth={1.5} 
+            d="M16 11V7a4 4 0 00-8 0v4M5 9h14l-1 9H6L5 9z" 
+          />
+        </svg>
+      </div>
+      <h2 className="text-2xl font-semibold text-gray-900 mb-2">Your cart is empty</h2>
+      <p className="text-gray-600 mb-6">Looks like you haven&apos;t added any products to your cart yet.</p>
+      <CustomButton
+        label="Continue Shopping"
+        loading={false}
+        onClick={onContinueShopping}
+      />
+    </div>
+  );
+}
+
 export const CartClient = () => {
+  const router = useRouter();
   const { cart, loading, error, fetchCart } = useCart();
   const [voucher, setVoucher] = useState('');
 
   useEffect(() => {
     fetchCart();
-  }, []);
+  }, [fetchCart]);
+
+  const handleContinueShopping = useCallback(() => {
+    router.push('/search');
+  }, [router]);
+
+  const handleCheckout = useCallback(() => {
+    router.push('/pay');
+  }, [router]);
+
+  const handleRetry = useCallback(() => {
+    fetchCart();
+  }, [fetchCart]);
+
+  const handleVoucherApply = useCallback(() => {
+    // TODO: Implement voucher application logic
+    console.log('Applying voucher:', voucher);
+  }, [voucher]);
 
   if (loading) {
-    return (
-      <div className="fixed inset-0 flex items-center justify-center z-50">
-        <div className="text-lg font-medium text-gray-700">Loading cart...</div>
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   if (error) {
-    return (
-      <div className="text-center py-8 text-red-600">{error}</div>
-    );
+    return <ErrorMessage error={error} onRetry={handleRetry} />;
   }
 
   if (!cart || cart.totalItems === 0) {
-    return (
-      <div className="text-center py-8">
-        <p className="text-xl text-gray-600 mb-4">Your cart is empty</p>
-        <CustomButton
-          label="Continue Shopping"
-          loading={false}
-          onClick={() => window.location.href = '/'}
-        />
-      </div>
-    );
+    return <EmptyCart onContinueShopping={handleContinueShopping} />;
   }
 
   return (
@@ -46,10 +110,12 @@ export const CartClient = () => {
       <div className="py-4 text-4xl font-bold">
         What&apos;s in your Bag?
       </div>
+      
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* Left: Cart Items */}
         <div className="md:col-span-2">
-          <div className="bg-white rounded-2xl border border-gray-300 p-0 overflow-hidden">
+          <div className="bg-white rounded-2xl border border-gray-300 overflow-hidden">
+            {/* Table Header - hidden on mobile */}
             <div className="hidden md:grid grid-cols-12 items-center px-6 py-3 border-b border-gray-300 text-gray-500 font-semibold text-sm">
               <div className="col-span-5">Product Info</div>
               <div className="col-span-3 text-center">Quantity</div>
@@ -57,38 +123,88 @@ export const CartClient = () => {
               <div className="col-span-2 text-center">Action</div>
             </div>
 
+            {/* Cart Items */}
             {cart.items.map((item) => (
               <div
-                key={item.productId}
-                className="flex flex-col md:grid md:grid-cols-12 items-start md:items-center ml-2 md:ml-6 mr-2 md:mr-6 py-6 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition"
+                key={`${item.productId}-${item.size}-${item.color}`}
+                className="flex flex-col md:grid md:grid-cols-12 items-start md:items-center px-6 py-6 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition"
               >
                 {/* Product Info */}
-                <div className="flex items-center gap-4 col-span-5 w-full md:w-auto mb-2 md:mb-0">
-                  <img src={item.imageUrl} alt={item.productName} className="w-16 h-16 object-cover rounded-lg flex-shrink-0" />
-                  <div>
-                    <div className="font-semibold text-base text-gray-900 break-words max-w-[150px] md:max-w-none">{item.productName}</div>
-                    <div className="text-xs text-gray-500">Set : Colour: {item.color || "-"}</div>
+                <div className="flex items-center gap-4 col-span-5 w-full md:w-auto mb-4 md:mb-0">
+                  <div className="relative w-16 h-16 flex-shrink-0">
+                    <Image 
+                      src={item.imageUrl} 
+                      alt={item.productName} 
+                      fill
+                      className="object-cover rounded-lg" 
+                      sizes="64px"
+                    />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-semibold text-base text-gray-900 break-words">
+                      {item.productName}
+                    </h3>
+                    <div className="text-xs text-gray-500 mt-1">
+                      <span>Brand: {item.brand}</span>
+                      <span className="mx-1">•</span>
+                      <span>Color: {item.color}</span>
+                      <span className="mx-1">•</span>
+                      <span>Size: {item.size}</span>
+                    </div>
+                    <div className="text-xs text-gray-500 mt-1">
+                      Material: {item.material}
+                    </div>
                   </div>
                 </div>
 
                 {/* Quantity */}
-                <div className="flex items-center gap-2 col-span-3 w-full md:justify-center mb-2 md:mb-0">
-                  <button className="w-8 h-8 rounded-full border border-gray-300 text-lg font-bold flex items-center justify-center hover:bg-gray-100 transition" disabled>-</button>
-                  <span className="mx-2 font-medium text-base">{item.quantity}</span>
-                  <button className="w-8 h-8 rounded-full border border-gray-300 text-lg font-bold flex items-center justify-center hover:bg-gray-100 transition" disabled>+</button>
+                <div className="flex items-center gap-2 col-span-3 w-full md:justify-center mb-4 md:mb-0">
+                  <button 
+                    className="w-8 h-8 rounded-full border border-gray-300 text-lg font-bold flex items-center justify-center hover:bg-gray-100 transition disabled:opacity-50 disabled:cursor-not-allowed" 
+                    disabled
+                    aria-label="Decrease quantity"
+                  >
+                    -
+                  </button>
+                  <span className="mx-2 font-medium text-base min-w-[2ch] text-center">
+                    {item.quantity}
+                  </span>
+                  <button 
+                    className="w-8 h-8 rounded-full border border-gray-300 text-lg font-bold flex items-center justify-center hover:bg-gray-100 transition disabled:opacity-50 disabled:cursor-not-allowed" 
+                    disabled
+                    aria-label="Increase quantity"
+                  >
+                    +
+                  </button>
                 </div>
 
                 {/* Total */}
-                <div className="flex items-center col-span-2 w-full md:justify-center mb-2 md:mb-0">
-                  <span className="font-semibold text-lg text-gray-900">
-                    ₹{item.totalDiscountedPrice.toLocaleString()}
-                  </span>
+                <div className="col-span-2 w-full md:text-center mb-4 md:mb-0">
+                  <div className="flex flex-col items-start md:items-center">
+                    <span className="font-semibold text-lg text-gray-900">
+                      ₹{item.totalDiscountedPrice.toLocaleString()}
+                    </span>
+                    {item.discountOnProduct > 0 && (
+                      <div className="text-xs text-gray-500 mt-1">
+                        <span className="line-through mr-1">
+                          ₹{(item.price * item.quantity).toLocaleString()}
+                        </span>
+                        <span className="text-green-600">
+                          ({item.discountOnProduct}% off)
+                        </span>
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 {/* Action */}
-                <div className="flex items-center col-span-2 w-full md:justify-center">
-                  <button className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition text-gray-500" disabled>
-                    <FaTrash />
+                <div className="col-span-2 w-full md:text-center">
+                  <button 
+                    className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-100 transition text-gray-500 hover:text-red-600 disabled:opacity-50 disabled:cursor-not-allowed" 
+                    disabled
+                    aria-label="Remove item from cart"
+                  >
+                    <FaTrash size={14} />
                   </button>
                 </div>
               </div>
@@ -98,56 +214,89 @@ export const CartClient = () => {
 
         {/* Right: Order Summary */}
         <div className="md:col-span-1">
-          <div className="bg-white rounded-2xl border border-gray-300 p-6 mb-6">
-            <div className="font-semibold mb-4">Order Summary</div>
+          <div className="bg-white rounded-2xl border border-gray-300 p-6 sticky top-4">
+            <h2 className="font-semibold text-lg mb-6">Order Summary</h2>
 
             {/* Voucher input */}
-            <div className="relative mb-4">
+            <div className="relative mb-6">
               <input
                 type="text"
                 placeholder="Discount voucher"
-                className="flex-1 w-full rounded-full border border-gray-300 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-200 pr-28"
+                className="w-full rounded-full border border-gray-300 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-200 pr-20"
                 value={voucher}
-                onChange={e => setVoucher(e.target.value)}
+                onChange={(e) => setVoucher(e.target.value)}
               />
               <button
-                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-gray-900 text-white px-7 py-2 text-sm font-semibold hover:bg-black transition shadow"
-                style={{ minWidth: 80 }}
+                onClick={handleVoucherApply}
+                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-gray-900 text-white px-4 py-2 text-xs font-semibold hover:bg-black transition shadow"
+                disabled={!voucher.trim()}
               >
                 Apply
               </button>
             </div>
 
             {/* Summary items */}
-            <div className="flex justify-between mb-2 text-sm">
-              <span>Sub Total</span>
-              <span>₹{cart.totalOriginalPrice.toLocaleString()}</span>
-            </div>
-            <div className="flex justify-between mb-2 text-sm text-green-700">
-              <span>Discount</span>
-              <span>-₹{cart.totalDiscount.toLocaleString()}</span>
-            </div>
-            <div className="flex justify-between mb-2 text-sm">
-              <span>Shipping</span>
-              <span>₹{cart.shippingCharge.toLocaleString()}</span>
-            </div>
-            <div className="flex justify-between items-center mt-4 mb-2 text-lg font-bold">
-              <span>Total</span>
-              <span>₹{cart.finalTotal.toLocaleString()}</span>
+            <div className="space-y-3 mb-6">
+              <div className="flex justify-between text-sm">
+                <span>Sub Total ({cart.totalItems} items)</span>
+                <span>₹{cart.totalOriginalPrice.toLocaleString()}</span>
+              </div>
+              
+              {cart.totalDiscount > 0 && (
+                <div className="flex justify-between text-sm text-green-700">
+                  <span>Discount</span>
+                  <span>-₹{cart.totalDiscount.toLocaleString()}</span>
+                </div>
+              )}
+              
+              <div className="flex justify-between text-sm">
+                <span>Shipping</span>
+                <span>
+                  {cart.shippingCharge > 0 
+                    ? `₹${cart.shippingCharge.toLocaleString()}`
+                    : 'Free'
+                  }
+                </span>
+              </div>
+              
+              <hr className="my-4" />
+              
+              <div className="flex justify-between items-center text-lg font-bold">
+                <span>Total</span>
+                <span>₹{cart.finalTotal.toLocaleString()}</span>
+              </div>
             </div>
 
-            <div className="flex items-center gap-2 text-xs text-gray-500 mb-4">
-              <span className="inline-block w-4 h-4 rounded-full border border-gray-300 flex-shrink-0 flex items-center justify-center mr-1">✓</span>
-              Read t&c before purchasing
-              <span className="underline cursor-pointer">Details</span>
+            {/* Terms checkbox */}
+            <div className="flex items-start gap-2 text-xs text-gray-500 mb-6">
+              <input 
+                type="checkbox" 
+                id="terms"
+                className="mt-1 h-3 w-3"
+                defaultChecked
+              />
+              <label htmlFor="terms" className="flex-1">
+                I agree to the{' '}
+                <button className="underline hover:text-gray-700">
+                  terms and conditions
+                </button>
+              </label>
             </div>
 
             <CustomButton
-              label="Checkout Now"
+              label={`Checkout Now (₹${cart.finalTotal.toLocaleString()})`}
               loading={false}
-              onClick={() => window.location.href = '/pay'}
-            //   className="w-full mt-2 bg-black text-white rounded-full py-3 font-semibold text-lg hover:bg-gray-900 transition"
+              onClick={handleCheckout}
             />
+            
+            <div className="mt-4 text-center">
+              <button 
+                onClick={handleContinueShopping}
+                className="text-sm text-gray-500 hover:text-gray-700 underline"
+              >
+                Continue Shopping
+              </button>
+            </div>
           </div>
         </div>
       </div>

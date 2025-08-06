@@ -1,55 +1,77 @@
 import { Product } from '@/lib/types/product';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { toggleProductLike } from '@/services/product.service';
 import { useAuth } from '@/hooks/useAuth';
 
 interface ProductCardProps {
   product: Product;
+  onLikeToggle?: (productId: string, isLiked: boolean) => void;
 }
 
-export default function ProductCard({ product }: ProductCardProps) {
-  const [bgImage, setBgImage] = useState(product.imageUrls?.[0]);
+export default function ProductCard({ product, onLikeToggle }: ProductCardProps) {
+  const [bgImage, setBgImage] = useState(product.imageUrls?.[0] || '');
   const [descExpanded, setDescExpanded] = useState(false);
-  const [isLiked, setIsLiked] = useState(product.isLiked || false);
+  const [isLiked, setIsLiked] = useState(product.isLiked ?? false);
   const [likeCount, setLikeCount] = useState(product.likeCount);
   const [likeLoading, setLikeLoading] = useState(false);
   const { token } = useAuth();
   
   const discountedPrice = product.price - (product.price * product.discount) / 100;
+  const hasDiscount = product.discount > 0;
+  const hasImages = product.imageUrls && product.imageUrls.length > 0;
 
-  const handleLikeToggle = async () => {
+  const handleImageError = useCallback(() => {
+    setBgImage('');
+  }, []);
+
+  const handleLikeToggle = useCallback(async () => {
     if (!token) {
-      // Handle not logged in state - you might want to show a login popup
+      // You might want to show a login prompt here
+      console.warn('User must be logged in to like products');
       return;
     }
     
     if (likeLoading) return;
+    
     setLikeLoading(true);
+    const previousIsLiked = isLiked;
+    const previousLikeCount = likeCount;
+    
+    // Optimistic update
+    setIsLiked(!isLiked);
+    setLikeCount(prev => isLiked ? prev - 1 : prev + 1);
     
     try {
-      const response = await toggleProductLike(product.productId, token);
-      setIsLiked(!isLiked);
-      setLikeCount(prev => isLiked ? prev - 1 : prev + 1);
+      await toggleProductLike(product.productId, token);
+      onLikeToggle?.(product.productId, !previousIsLiked);
     } catch (error) {
+      // Revert optimistic update on error
+      setIsLiked(previousIsLiked);
+      setLikeCount(previousLikeCount);
       console.error("Failed to toggle like:", error);
     } finally {
       setLikeLoading(false);
     }
-  };
+  }, [token, likeLoading, isLiked, likeCount, product.productId, onLikeToggle]);
 
-
+  const toggleDescription = useCallback(() => {
+    setDescExpanded(prev => !prev);
+  }, []);
 
   return (
     <div className="relative bg-white overflow-hidden flex flex-col">
       {/* Background image only on laptop and up */}
       {bgImage && (
         <div className="hidden lg:block absolute right-0 top-0 h-full w-1/2 z-0 overflow-hidden">
-          <img
+          <Image
             src={bgImage}
             alt="background"
-            className="w-full h-full object-cover"
+            fill
+            className="object-cover"
+            onError={handleImageError}
+            sizes="(max-width: 1024px) 0px, 50vw"
           />
           <div
             className="absolute left-0 top-0 h-full w-full"
@@ -65,63 +87,92 @@ export default function ProductCard({ product }: ProductCardProps) {
         {/* Top Row */}
         <div className="flex items-start justify-between mb-1 w-full md:w-2/3 lg:w-1/2 px-4">
           <div>
-            <div className="text-xl font-semibold">{product.productName}</div>
-            <div className="text-sm text-gray-500">{product.brand || "Brand"}</div>
+            <h2 className="text-xl font-semibold">{product.productName}</h2>
+            <p className="text-sm text-gray-500">{product.brand || "Brand"}</p>
           </div>
           <div className="w-15" />
           <div className="flex items-center gap-15">
             <div className="flex items-center gap-2">
-              {product.discount > 0 ? (
+              {hasDiscount ? (
                 <>
-                  <div className="text-green-600 text-lg font-semibold">₹{discountedPrice.toFixed(2)}</div>
-                  <span className="text-gray-500 line-through text-sm">₹{product.price}</span>
-                  
-                  <span className="text-green-600 text-sm">{product.discount}% off</span>
+                  <div className="text-green-600 text-lg font-semibold">
+                    ₹{discountedPrice.toFixed(2)}
+                  </div>
+                  <span className="text-gray-500 line-through text-sm">
+                    ₹{product.price}
+                  </span>
+                  <span className="text-green-600 text-sm">
+                    {product.discount}% off
+                  </span>
                 </>
               ) : (
-                <div className="text-green-600 text-lg font-semibold">₹{product.price}</div>
+                <div className="text-green-600 text-lg font-semibold">
+                  ₹{product.price}
+                </div>
               )}
             </div>
-            <button className="text-2xl px-2"><b>⋮</b></button>
+            <button 
+              className="text-2xl px-2"
+              aria-label="More options"
+            >
+              <b>⋮</b>
+            </button>
           </div>
         </div>
 
         {/* Thumbnails */}
-        <div className="flex overflow-x-auto gap-4 mb-2" style={{ height: 320 }}>
-          <div style={{ height: 300, width: 0 }} />
-          {(Array.isArray(product.imageUrls) ? product.imageUrls : []).map((url, idx) => (
-            <img
-              key={idx}
-              src={url}
-              alt={product.productName}
-              onMouseEnter={() => setBgImage(url)}
-              style={{ height: 300, width: "auto" }}
-              className="object-cover rounded-xl cursor-pointer"
-            />
-          ))}
-        </div>
+        {hasImages && (
+          <div className="flex overflow-x-auto gap-4 mb-2" style={{ height: 320 }}>
+            <div style={{ height: 300, width: 0 }} />
+            {product.imageUrls.map((url, idx) => (
+              <Image
+                key={`${product.productId}-${idx}`}
+                src={url}
+                alt={`${product.productName} - view ${idx + 1}`}
+                width={300}
+                height={300}
+                onMouseEnter={() => setBgImage(url)}
+                style={{ height: 300, width: "auto" }}
+                className="object-cover rounded-xl cursor-pointer"
+                onError={handleImageError}
+                sizes="300px"
+              />
+            ))}
+          </div>
+        )}
 
         {/* Actions Row */}
         <div className="w-full md:w-2/3 lg:w-1/2 flex items-center gap-6 mb-2 px-4">
           <button 
             onClick={handleLikeToggle}
             disabled={likeLoading}
-            className="ml-2 flex items-center gap-4"
-            >
-             <Image
-               src={isLiked ? '/icons/like_filled.svg' : '/icons/like_outlined.svg'}
-               alt="like"
-               width={20}
-               height={20}
-               className={`transition-all ${likeLoading ? 'opacity-50' : ''}`}
-             />
-             <span className="text-sm text-gray-600">{likeCount}</span>
+            className="ml-2 flex items-center gap-4 disabled:opacity-50"
+            aria-label={isLiked ? 'Unlike product' : 'Like product'}
+          >
+            <Image
+              src={isLiked ? '/icons/like_filled.svg' : '/icons/like_outlined.svg'}
+              alt={isLiked ? 'Liked' : 'Not liked'}
+              width={20}
+              height={20}
+              className={`transition-all ${likeLoading ? 'opacity-50' : ''}`}
+            />
+            <span className="text-sm text-gray-600">{likeCount}</span>
           </button>
           <div className="flex-2" />
-          <button className="flex items-center gap-1 text-gray-700">
-            <img src="/icons/share.svg" alt="share-product" width={24} height={24} />
+          <button 
+            className="flex items-center gap-1 text-gray-700"
+            aria-label="Share product"
+          >
+            <Image 
+              src="/icons/share.svg" 
+              alt="Share" 
+              width={24} 
+              height={24} 
+            />
           </button>
-          <button className="bg-black text-white rounded px-4 py-1 text-sm">0 reviews</button>
+          <button className="bg-black text-white rounded px-4 py-1 text-sm">
+            0 reviews
+          </button>
           <div className="flex-1" />
         </div>
 
@@ -138,10 +189,18 @@ export default function ProductCard({ product }: ProductCardProps) {
                   overflow: "hidden",
                 }
           }
-          onClick={() => setDescExpanded((prev) => !prev)}
+          onClick={toggleDescription}
+          onKeyPress={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              toggleDescription();
+            }
+          }}
+          role="button"
+          tabIndex={0}
           title={descExpanded ? "Show less" : "Show more"}
         >
-          {product.productDescription || `${product.productName} - ${product.gender} ${product.size} ${product.color}`}
+          {product.productDescription || 
+           `${product.productName} - ${product.gender} ${product.size} ${product.color}`}
           {!descExpanded && (
             <span className="text-blue-500 ml-2">See more</span>
           )}
@@ -153,11 +212,11 @@ export default function ProductCard({ product }: ProductCardProps) {
         {/* Product Details */}
         <div className="w-full md:w-2/3 lg:w-1/2 px-4 mb-2">
           <div className="flex items-center gap-2 text-sm text-gray-600">
-            <span>{product.gender}</span>
-            <span>•</span>
-            <span>{product.size}</span>
-            <span>•</span>
-            <span>{product.color}</span>
+            {product.gender && <span>{product.gender}</span>}
+            {product.gender && product.size && <span>•</span>}
+            {product.size && <span>{product.size}</span>}
+            {product.size && product.color && <span>•</span>}
+            {product.color && <span>{product.color}</span>}
           </div>
         </div>
 
@@ -168,7 +227,6 @@ export default function ProductCard({ product }: ProductCardProps) {
               Make it yours
             </button>
           </Link>
-
           <div className="flex-1" />
         </div>
       </div>

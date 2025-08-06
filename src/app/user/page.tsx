@@ -1,11 +1,11 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
-import { User } from "@/lib/types/auth";
 import CustomButton from "@/components/ui/CustomButton";
 import AuthPopup from "@/components/shared/AuthPopup";
 import Navbar from "@/components/layout/Navbar";
+import Image from "next/image";
 
 // Placeholder orders data
 const sampleOrders = [
@@ -49,7 +49,7 @@ const sampleOrders = [
 ];
 
 export default function UserProfile() {
-    const router = useRouter();
+    // const router = useRouter();
     const { user, logout } = useAuth();
     const [mounted, setMounted] = useState(false);
 
@@ -75,7 +75,7 @@ export default function UserProfile() {
                     <div className="space-y-4">
                         <div className="flex items-center gap-4 mb-6">
                             <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center">
-                                <img src="/icons/user.svg" alt="User" className="w-10 h-10" />
+                                <Image src="/icons/user.svg" alt="User" className="w-10 h-10" />
                             </div>
                             <div>
                                 <div className="text-xl font-bold">{user.name}</div>
@@ -147,7 +147,7 @@ export default function UserProfile() {
                                     <div className="col-span-3 flex flex-wrap gap-2 mb-2 md:mb-0">
                                         {order.items.map((item) => (
                                             <div key={item.productId} className="flex items-center gap-2 bg-gray-100 rounded-lg px-2 py-1">
-                                                <img src={item.imageUrl} alt={item.productName} className="w-8 h-8 object-cover rounded" />
+                                                <Image src={item.imageUrl} alt={item.productName} className="w-8 h-8 object-cover rounded" />
                                                 <span className="text-xs font-medium">{item.productName} x{item.quantity}</span>
                                             </div>
                                         ))}
