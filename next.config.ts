@@ -1,12 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Disable Turbopack overlay
-  experimental: {
-    
-  },
+  output: 'export',
   images: {
-    domains: ['s3.ap-south-1.amazonaws.com'],
+    domains: ['s3.ap-south-1.amazonaws.com'], // ✅ S3 image domains if using <Image />
+  },
+  experimental: {
+    // any specific experimental flags if needed
   },
 };
 

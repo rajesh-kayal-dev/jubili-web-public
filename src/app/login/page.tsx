@@ -2,7 +2,6 @@
 "use client";
 import React, { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import Image from "next/image";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
