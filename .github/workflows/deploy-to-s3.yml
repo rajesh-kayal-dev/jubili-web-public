@@ -9,6 +9,10 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
+    env:
+      NEXT_PUBLIC_API_BASE_URL: ${{ secrets.NEXT_PUBLIC_API_BASE_URL }}
+      PORT: ${{ secrets.PORT }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
