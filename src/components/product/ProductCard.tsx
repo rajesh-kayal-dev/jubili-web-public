@@ -65,10 +65,9 @@ export default function ProductCard({ product, onLikeToggle }: ProductCardProps)
       {/* Background image only on laptop and up */}
       {bgImage && (
         <div className="hidden lg:block absolute right-0 top-0 h-full w-1/2 z-0 overflow-hidden">
-          <Image
+          <img
             src={bgImage}
             alt="background"
-            fill
             className="object-cover"
             onError={handleImageError}
             sizes="(max-width: 1024px) 0px, 50vw"
@@ -125,7 +124,7 @@ export default function ProductCard({ product, onLikeToggle }: ProductCardProps)
           <div className="flex overflow-x-auto gap-4 mb-2" style={{ height: 320 }}>
             <div style={{ height: 300, width: 0 }} />
             {product.imageUrls.map((url, idx) => (
-              <Image
+              <img
                 key={`${product.productId}-${idx}`}
                 src={url}
                 alt={`${product.productName} - view ${idx + 1}`}
@@ -149,7 +148,7 @@ export default function ProductCard({ product, onLikeToggle }: ProductCardProps)
             className="ml-2 flex items-center gap-4 disabled:opacity-50"
             aria-label={isLiked ? 'Unlike product' : 'Like product'}
           >
-            <Image
+            <img
               src={isLiked ? '/icons/like_filled.svg' : '/icons/like_outlined.svg'}
               alt={isLiked ? 'Liked' : 'Not liked'}
               width={20}
@@ -163,7 +162,7 @@ export default function ProductCard({ product, onLikeToggle }: ProductCardProps)
             className="flex items-center gap-1 text-gray-700"
             aria-label="Share product"
           >
-            <Image 
+            <img 
               src="/icons/share.svg" 
               alt="Share" 
               width={24} 
