@@ -2,7 +2,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: 'export',
   images: {
     domains: ['s3.ap-south-1.amazonaws.com'], // ✅ S3 image domains if using <Image />
   },
