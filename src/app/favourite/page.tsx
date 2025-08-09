@@ -26,7 +26,7 @@ export default function FavouritePage() {
       <>
         <Navbar />
         <div className="fixed inset-0 flex items-center justify-center z-50">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+          <img src="/icons/loading.svg" alt="Loading..." className="w-8 h-8 animate-spin" />
         </div>
       </>
     );
@@ -36,7 +36,7 @@ export default function FavouritePage() {
     <>
       <Navbar />
       <div className="max-w-6xl mx-auto p-4">
-        <div className={`py-4 text-4xl font-bold ${quicksand.className}`}>
+        <div className={`py-4 text-4xl font-bold `}>
           Your Liked Products
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">

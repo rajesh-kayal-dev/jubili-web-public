@@ -7,13 +7,18 @@ import { useCart } from '@/hooks/useCart';
 import CustomButton from '@/components/ui/CustomButton';
 import { FaTrash } from 'react-icons/fa';
 
-// Loading component
+// Loading component - FIXED: No longer covers navbar
 function LoadingSpinner() {
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50 bg-white bg-opacity-75">
-      <div className="flex flex-col items-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mb-4"></div>
-        <div className="text-lg font-medium text-gray-700">Loading cart...</div>
+    <div className="max-w-6xl mx-auto p-4">
+      <div className="py-4 text-4xl font-bold">
+        What&apos;s in your Bag?
+      </div>
+      <div className="flex items-center justify-center py-12">
+        <div className="flex flex-col items-center">
+          <img src="/icons/loading.svg" alt="Loading..." className="w-8 h-8 animate-spin mb-4" />
+          <div className="text-lg font-medium text-gray-700">Loading cart...</div>
+        </div>
       </div>
     </div>
   );
@@ -22,16 +27,21 @@ function LoadingSpinner() {
 // Error component
 function ErrorMessage({ error, onRetry }: { error: string; onRetry: () => void }) {
   return (
-    <div className="text-center py-8">
-      <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md mx-auto">
-        <h3 className="text-red-800 font-medium mb-2">Error loading cart</h3>
-        <p className="text-red-600 mb-4">{error}</p>
-        <button 
-          onClick={onRetry}
-          className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition"
-        >
-          Try again
-        </button>
+    <div className="max-w-6xl mx-auto p-4">
+      <div className="py-4 text-4xl font-bold">
+        What&apos;s in your Bag?
+      </div>
+      <div className="text-center py-8">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md mx-auto">
+          <h3 className="text-red-800 font-medium mb-2">Error loading cart</h3>
+          <p className="text-red-600 mb-4">{error}</p>
+          <button 
+            onClick={onRetry}
+            className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition"
+          >
+            Try again
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -40,29 +50,34 @@ function ErrorMessage({ error, onRetry }: { error: string; onRetry: () => void }
 // Empty cart component
 function EmptyCart({ onContinueShopping }: { onContinueShopping: () => void }) {
   return (
-    <div className="text-center py-12">
-      <div className="mb-6">
-        <svg 
-          className="mx-auto h-16 w-16 text-gray-400" 
-          fill="none" 
-          viewBox="0 0 24 24" 
-          stroke="currentColor"
-        >
-          <path 
-            strokeLinecap="round" 
-            strokeLinejoin="round" 
-            strokeWidth={1.5} 
-            d="M16 11V7a4 4 0 00-8 0v4M5 9h14l-1 9H6L5 9z" 
-          />
-        </svg>
+    <div className="max-w-6xl mx-auto p-4">
+      <div className="py-4 text-4xl font-bold">
+        What&apos;s in your Bag?
       </div>
-      <h2 className="text-2xl font-semibold text-gray-900 mb-2">Your cart is empty</h2>
-      <p className="text-gray-600 mb-6">Looks like you haven&apos;t added any products to your cart yet.</p>
-      <CustomButton
-        label="Continue Shopping"
-        loading={false}
-        onClick={onContinueShopping}
-      />
+      <div className="text-center py-12">
+        <div className="mb-6">
+          <svg 
+            className="mx-auto h-16 w-16 text-gray-400" 
+            fill="none" 
+            viewBox="0 0 24 24" 
+            stroke="currentColor"
+          >
+            <path 
+              strokeLinecap="round" 
+              strokeLinejoin="round" 
+              strokeWidth={1.5} 
+              d="M16 11V7a4 4 0 00-8 0v4M5 9h14l-1 9H6L5 9z" 
+            />
+          </svg>
+        </div>
+        <h2 className="text-2xl font-semibold text-gray-900 mb-2">Your cart is empty</h2>
+        <p className="text-gray-600 mb-6">Looks like you haven&apos;t added any products to your cart yet.</p>
+        <CustomButton
+          label="Continue Shopping"
+          loading={false}
+          onClick={onContinueShopping}
+        />
+      </div>
     </div>
   );
 }
