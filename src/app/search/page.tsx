@@ -46,10 +46,10 @@ function SearchContent() {
   } = useSearch(query, token || undefined);
 
   return (
-    <div className="container mx-auto px-4 py-6">
+    <div className="container mx-auto px-0 py-6 border border-blue-500">
       {/* Search query display */}
       {query && (
-        <div className="mb-6">
+        <div className="mb-6 px-4">
           <h1 className="text-2xl font-semibold text-gray-900">
             Search Results for &quot;{query}&quot;
           </h1>

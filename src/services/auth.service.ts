@@ -22,7 +22,7 @@ class AuthService {
         method: 'GET'
       });      
       if (!response.ok) {
-        const error = await response.json();
+        const error = await response.json(); 
         throw new Error(error.message || 'Failed to login');
       }
       const data: AuthResponse = await response.json();      
